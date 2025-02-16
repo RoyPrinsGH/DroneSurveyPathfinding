@@ -1,10 +1,11 @@
-﻿using System.Diagnostics;
-using System.Reflection;
+﻿using System.Reflection;
 using DroneSurveyPathfinding.Algorithms;
 using Spectre.Console;
 
 using Position = (int x, int y);
 using ScoredPath = (int score, System.Collections.Generic.List<(int x, int y)> path);
+
+#pragma warning disable CS0162
 
 namespace DroneSurveyPathfinding;
 
@@ -22,23 +23,6 @@ public static class Program
         {
             RunInteractive(args);
         }
-    }
-
-    private static void RunNonInteractive()
-    {
-        GridWorldModel? worldModel = GridWorldModelImporter.TryImportGridWorldModel("Grids/1000.txt");
-
-        if (worldModel is null)
-        {
-            return;
-        }
-
-        ISurveyPathfinderAlgorithm algToDebug = new GeneticSurveyPathfinder();
-
-        ScoredPath result = algToDebug.CalculatePath(worldModel, (499, 499), 100, 1000);
-
-        Display.DisplayState(worldModel, result.path[^1], result.path);
-        Console.WriteLine($"{algToDebug} - Final score: {result.score}");
     }
 
     private static void RunInteractive(string[] args)
@@ -107,5 +91,22 @@ public static class Program
 
             Console.WriteLine($"{algorithm} - Final score: {result.score}");
         }
+    }
+
+    private static void RunNonInteractive()
+    {
+        GridWorldModel? worldModel = GridWorldModelImporter.TryImportGridWorldModel("Grids/1000.txt");
+
+        if (worldModel is null)
+        {
+            return;
+        }
+
+        ISurveyPathfinderAlgorithm algToDebug = new GeneticSurveyPathfinder();
+
+        ScoredPath result = algToDebug.CalculatePath(worldModel, (499, 499), 100, 1000);
+
+        Display.DisplayState(worldModel, result.path[^1], result.path);
+        Console.WriteLine($"{algToDebug} - Final score: {result.score}");
     }
 }

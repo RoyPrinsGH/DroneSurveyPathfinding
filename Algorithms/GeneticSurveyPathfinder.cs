@@ -5,6 +5,7 @@ using Path = List<(int x, int y)>;
 using ScoredPath = (int score, List<(int x, int y)> path);
 using System.Diagnostics;
 
+// This one is not very optimised, mostly because I already expected it to not give great results.
 public class GeneticSurveyPathfinder : ISurveyPathfinderAlgorithm
 {
     private const int populationSize = 50;
