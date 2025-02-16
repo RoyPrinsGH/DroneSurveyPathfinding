@@ -72,16 +72,17 @@ public class GridWorldModel
 
     public int ValueOfCellAfterTakingPath(Path path, Position position)
     {
-        int lastIndex = path.LastIndexOf(position);
+        CellData cellData = Grid[position.x, position.y];
 
-        if (lastIndex == -1)
+        for (int i = path.Count - 1; i >= Math.Max(0, path.Count - 1 - cellData.maxValue * TICKS_PER_INCREASE); i--)
         {
-            return Grid[position.x, position.y].value;
+            if (path[i] == position)
+            {
+                return Math.Min((path.Count - 1 - i) / TICKS_PER_INCREASE, Grid[position.x, position.y].maxValue);
+            }
         }
 
-        int ticksSinceLastVisit = path.Count - lastIndex - 1;
-
-        return Math.Min(ticksSinceLastVisit / TICKS_PER_INCREASE, Grid[position.x, position.y].maxValue);
+        return cellData.value;
     }
 
     public ScoredPath ScorePath(Path path)

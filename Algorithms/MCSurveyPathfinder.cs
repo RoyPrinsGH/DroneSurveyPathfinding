@@ -9,7 +9,7 @@ using System.Diagnostics;
 public class MCSurveyPathfinder : ISurveyPathfinderAlgorithm
 {
     private const int exhaustiveDepth = 3;
-    private const int searchForwardFactor = 2;
+    private const int searchForwardFactor = 1;
 
     public ScoredPath CalculatePath(GridWorldModel worldModel, Position droneStartingPosition, int steps, int maxRunTimeMilliseconds)
     {
