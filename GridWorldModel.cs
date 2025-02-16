@@ -68,17 +68,6 @@ public class GridWorldModel
         return sb.ToString();
     }
 
-    public void Update()
-    {
-        foreach (int y in Enumerable.Range(0, Height))
-        {
-            foreach (int x in Enumerable.Range(0, Width))
-            {
-                Grid[x, y].value = Math.Min(Grid[x, y].value + CELL_GROWTH_PER_TICK, Grid[x, y].maxValue);
-            }
-        }
-    }
-
     public int ValueOfCellAfterTakingPath(List<Position> path, Position position)
     {
         if (!path.Contains(position))
@@ -86,8 +75,8 @@ public class GridWorldModel
             return Grid[position.x, position.y].value;
         }
 
-        int ticksSinceLastVisit = path.LastIndexOf(position);
-        return Math.Min(ticksSinceLastVisit, Grid[position.x, position.y].maxValue);
+        int ticksSinceLastVisit = path.Count - path.LastIndexOf(position) - 1;
+        return Math.Min(ticksSinceLastVisit / 10, Grid[position.x, position.y].maxValue);
     }
 
     public IEnumerable<(Position, CellData)> GetNeighbors(Position position)

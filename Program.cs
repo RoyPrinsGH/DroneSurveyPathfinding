@@ -11,7 +11,18 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        GridWorldModel? worldModel = GridWorldModelImporter.TryImportGridWorldModel("Grids/100.txt");
+        var options = ArgParser.Parse(args);
+
+        if (options is null)
+        {
+            return;
+        }
+
+        (string filePath, Position droneStartingPosition, int maxTicks, int maxRunTimeMilliseconds, bool animate) = options.Value;
+
+        Console.WriteLine($"Running on file {filePath} with maxTicks = {maxTicks}, maxRunTime = {maxRunTimeMilliseconds} starting at {droneStartingPosition}");
+
+        GridWorldModel? worldModel = GridWorldModelImporter.TryImportGridWorldModel(filePath);
 
         if (worldModel is null)
         {
@@ -45,7 +56,17 @@ public static class Program
 
         foreach (ISurveyPathfinderAlgorithm algorithm in algorithmsToRun)
         {
-            ScoredPath result = algorithm.CalculatePath(worldModel, (36, 78), 1000, 1000);
+            ScoredPath result = algorithm.CalculatePath(worldModel, droneStartingPosition, maxTicks, maxRunTimeMilliseconds);
+
+            if (animate)
+            {
+                for (int i = 0; i < result.path.Count; i++)
+                {
+                    Console.Clear();
+                    Display.DisplayState(worldModel, result.path[i], result.path[..i]);
+                    Thread.Sleep(100);
+                }
+            }
 
             if (worldModel.Width <= 100)
             {

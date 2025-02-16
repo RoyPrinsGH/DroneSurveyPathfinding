@@ -11,7 +11,7 @@ public static class Display
 
         Func<(int x, int y), string> formatCell = ((int x, int y) position) =>
         {
-            string cellValueString = worldModel.Grid[position.x, position.y].ToString().PadRight(2);
+            string cellValueString = worldModel.ValueOfCellAfterTakingPath(path, position).ToString().PadRight(2);
 
             if (position == dronePosition)
             {
