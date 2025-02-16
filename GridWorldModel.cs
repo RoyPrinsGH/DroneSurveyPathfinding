@@ -23,12 +23,14 @@ public class GridWorldModel
 
     public int Width { get; init; }
     public int Height { get; init; }
+    public int MaxValue { get; init;}
     public CellData[,] Grid { get; private init; }
 
     public GridWorldModel(int width, int height)
     {
         Width = width;
         Height = height;
+        MaxValue = 0;
         Grid = new CellData[width, height];
     }
 
@@ -49,11 +51,18 @@ public class GridWorldModel
         {
             foreach (int y in Enumerable.Range(0, Height))
             {
+                int cellValue = data[y][x];
+
                 Grid[x, y] = new CellData
                 {
-                    value = data[y][x],
-                    maxValue = data[y][x]
+                    value = cellValue,
+                    maxValue = cellValue
                 };
+
+                if (cellValue > MaxValue)
+                {
+                    MaxValue = cellValue;
+                }
             }
         }
     }

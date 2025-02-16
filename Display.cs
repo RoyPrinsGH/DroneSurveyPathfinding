@@ -7,11 +7,13 @@ public static class Display
 {
     public static void DisplayState(GridWorldModel worldModel, (int x, int y) dronePosition, List<(int x, int y)> path)
     {
+        int padding = worldModel.MaxValue.ToString().Length;
+
         StringBuilder sb = new();
 
         Func<(int x, int y), string> formatCell = ((int x, int y) position) =>
         {
-            string cellValueString = worldModel.ValueOfCellAfterTakingPath(path, position).ToString().PadRight(2);
+            string cellValueString = worldModel.ValueOfCellAfterTakingPath(path, position).ToString().PadRight(padding);
 
             if (position == dronePosition)
             {

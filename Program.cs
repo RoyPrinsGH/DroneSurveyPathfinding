@@ -45,6 +45,12 @@ public static class Program
             return;
         }
 
+        if (droneStartingPosition.x > worldModel.Width || droneStartingPosition.y > worldModel.Height)
+        {
+            AnsiConsole.MarkupLine("[red]Starting position must be in bounds of the grid.[/]");
+            return;
+        }
+
         var algorithms = Assembly.GetExecutingAssembly().GetTypes()
             .Where(at => at.GetInterfaces().Contains(typeof(ISurveyPathfinderAlgorithm)))
             .Select(at => (ISurveyPathfinderAlgorithm)Activator.CreateInstance(at)!)
@@ -78,7 +84,6 @@ public static class Program
             {
                 for (int i = 0; i < result.path.Count; i++)
                 {
-                    Console.Clear();
                     Display.DisplayState(worldModel, result.path[i], result.path[..i]);
                     Thread.Sleep(100);
                 }
