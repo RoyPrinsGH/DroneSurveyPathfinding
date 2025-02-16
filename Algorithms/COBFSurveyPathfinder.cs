@@ -7,9 +7,9 @@ using ScoredPath = (int score, List<(int x, int y)> path);
 // Cut Off Breadth First
 public class COBFSurveyPathfinder : ISurveyPathfinderAlgorithm
 {
-    private const int CutOff = 1000;
+    private const int CutOff = 100;
 
-    public (Path path, int totalScore) CalculatePath(GridWorldModel worldModel, Position droneStartingPosition, int steps, int maxRunTimeMilliseconds)
+    public ScoredPath CalculatePath(GridWorldModel worldModel, Position droneStartingPosition, int steps, int maxRunTimeMilliseconds)
     {
         List<ScoredPath> paths = [(0, [droneStartingPosition])];
 
@@ -32,8 +32,6 @@ public class COBFSurveyPathfinder : ISurveyPathfinderAlgorithm
                             .ToList();
         }
 
-        var bestPath = paths.OrderByDescending(path => path.score).First();
-
-        return (bestPath.path, bestPath.score);
+        return paths.OrderByDescending(path => path.score).First();
     }
 }

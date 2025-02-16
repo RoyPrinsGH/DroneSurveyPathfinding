@@ -2,6 +2,9 @@
 using DroneSurveyPathfinding.Algorithms;
 using Spectre.Console;
 
+using Position = (int x, int y);
+using ScoredPath = (int score, System.Collections.Generic.List<(int x, int y)> path);
+
 namespace DroneSurveyPathfinding;
 
 public static class Program
@@ -27,7 +30,7 @@ public static class Program
         }
 
         var runnableAlgorithmsPrompt = new MultiSelectionPrompt<ISurveyPathfinderAlgorithm>()
-            .Title("Select project(s) to build")
+            .Title("Select algorithm(s) to run")
             .AddChoices(algorithms)
             .UseConverter(alg => alg.ToString()!)
             .NotRequired();
@@ -42,9 +45,14 @@ public static class Program
 
         foreach (ISurveyPathfinderAlgorithm algorithm in algorithmsToRun)
         {
-            var (path, totalScore) = algorithm.CalculatePath(worldModel, (49, 49), 100, 1000);
-            Display.DisplayState(worldModel, path[^1], path);
-            Console.WriteLine($"{algorithm} - Final score: {totalScore}");
+            ScoredPath result = algorithm.CalculatePath(worldModel, (36, 78), 1000, 1000);
+
+            if (worldModel.Width <= 100)
+            {
+                Display.DisplayState(worldModel, result.path[^1], result.path);
+            }
+
+            Console.WriteLine($"{algorithm} - Final score: {result.score}");
         }
     }
 }

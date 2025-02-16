@@ -1,22 +1,24 @@
 namespace DroneSurveyPathfinding.Algorithms;
 
 using Position = (int x, int y);
+using Path = List<(int x, int y)>;
+using ScoredPath = (int score, List<(int x, int y)> path);
 
 public class NaiveSurveyPathfinder : ISurveyPathfinderAlgorithm
 {
-    public (List<Position> path, int totalScore) CalculatePath(GridWorldModel worldModel, Position droneStartingPosition, int steps, int maxRunTimeMilliseconds)
+    public ScoredPath CalculatePath(GridWorldModel worldModel, Position droneStartingPosition, int steps, int maxRunTimeMilliseconds)
     {
         Random rng = new();
 
         Position currentDronePosition = droneStartingPosition;
-        List<Position> path = [currentDronePosition];
+        Path path = [currentDronePosition];
         
         int totalScore = 0;
         
         for (int i = 0; i < steps; i++)
         {
             int max = -1;
-            List<Position> targetCandidates = [];
+            Path targetCandidates = [];
 
             foreach ((Position position, CellData cellData) neighborData in worldModel.GetNeighbors(currentDronePosition))
             {
@@ -47,6 +49,6 @@ public class NaiveSurveyPathfinder : ISurveyPathfinderAlgorithm
             }
         }
 
-        return (path, totalScore);
+        return (totalScore, path);
     }
 }

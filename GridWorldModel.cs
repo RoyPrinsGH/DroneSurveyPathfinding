@@ -86,8 +86,7 @@ public class GridWorldModel
             return Grid[position.x, position.y].value;
         }
 
-        path.Reverse();
-        int ticksSinceLastVisit = path.IndexOf(position);
+        int ticksSinceLastVisit = path.LastIndexOf(position);
         return Math.Min(ticksSinceLastVisit, Grid[position.x, position.y].maxValue);
     }
 
