@@ -1,1 +1,1 @@
-dotnet build -c Release
+dotnet build -c Release && xcopy Grids bin\Release\net8.0\Grids /I
