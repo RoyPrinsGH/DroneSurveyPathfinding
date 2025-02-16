@@ -8,7 +8,7 @@ using System.Diagnostics;
 // Cut Off Breadth First
 public class COBFSurveyPathfinder : ISurveyPathfinderAlgorithm
 {
-    private const int CutOff = 100;
+    private const int cutOff = 100;
 
     public ScoredPath CalculatePath(GridWorldModel worldModel, Position droneStartingPosition, int steps, int maxRunTimeMilliseconds)
     {
@@ -37,7 +37,7 @@ public class COBFSurveyPathfinder : ISurveyPathfinderAlgorithm
             if (timer.ElapsedMilliseconds > maxRunTimeMilliseconds) break;
 
             paths = newPaths.OrderByDescending(path => path.score)
-                            .Take(CutOff)
+                            .Take(cutOff)
                             .ToList();
         }
 

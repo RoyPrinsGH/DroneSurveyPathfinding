@@ -1,6 +1,8 @@
 using System.Text;
 
 using Position = (int x, int y);
+using Path = System.Collections.Generic.List<(int x, int y)>;
+using ScoredPath = (int score, System.Collections.Generic.List<(int x, int y)> path);
 
 namespace DroneSurveyPathfinding;
 
@@ -17,7 +19,7 @@ public struct CellData
 
 public class GridWorldModel
 {
-    public const int CELL_GROWTH_PER_TICK = 1;
+    public const int TICKS_PER_INCREASE = 2;
 
     public int Width { get; init; }
     public int Height { get; init; }
@@ -76,10 +78,20 @@ public class GridWorldModel
         }
 
         int ticksSinceLastVisit = path.Count - path.LastIndexOf(position) - 1;
-        return Math.Min(ticksSinceLastVisit / 10, Grid[position.x, position.y].maxValue);
+        return Math.Min(ticksSinceLastVisit / TICKS_PER_INCREASE, Grid[position.x, position.y].maxValue);
     }
 
-    public IEnumerable<(Position, CellData)> GetNeighbors(Position position)
+    public ScoredPath ScorePath(Path path)
+    {
+        int score = 0;
+        for (int i = 0; i < path.Count; i++)
+        {
+            score += ValueOfCellAfterTakingPath(path[..i], path[i]);
+        }
+        return (score, path);
+    }
+
+    public IEnumerable<(Position position, CellData data)> GetNeighbors(Position position)
     {
         (int x, int y) = position;
 

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Diagnostics;
+using System.Reflection;
 using DroneSurveyPathfinding.Algorithms;
 using Spectre.Console;
 
@@ -9,7 +10,38 @@ namespace DroneSurveyPathfinding;
 
 public static class Program
 {
+    private const bool DEBUG = false;
+
     public static void Main(string[] args)
+    {
+        if (DEBUG)
+        {
+            RunNonInteractive();
+        }
+        else 
+        {
+            RunInteractive(args);
+        }
+    }
+
+    private static void RunNonInteractive()
+    {
+        GridWorldModel? worldModel = GridWorldModelImporter.TryImportGridWorldModel("Grids/1000.txt");
+
+        if (worldModel is null)
+        {
+            return;
+        }
+
+        ISurveyPathfinderAlgorithm algToDebug = new GeneticSurveyPathfinder();
+
+        ScoredPath result = algToDebug.CalculatePath(worldModel, (499, 499), 100, 1000);
+
+        Display.DisplayState(worldModel, result.path[^1], result.path);
+        Console.WriteLine($"{algToDebug} - Final score: {result.score}");
+    }
+
+    private static void RunInteractive(string[] args)
     {
         var options = ArgParser.Parse(args);
 
