@@ -52,7 +52,7 @@ public static class ArgParser
         }
         catch
         {
-            Console.WriteLine($"Usage: surveypathfinder.exe <gridFilePath> [{maxTicksOption} maxTicks] [{maxRunTimeOptions} maxRunTime] [{droneStartingPositionOption} x y] [{animateOption}]");
+            Console.WriteLine($"Usage: DroneSurveyPathfinding.exe <gridFilePath> [{maxTicksOption} maxTicks] [{maxRunTimeOptions} maxRunTime] [{droneStartingPositionOption} x y] [{animateOption}]");
             return null;
         }
     }

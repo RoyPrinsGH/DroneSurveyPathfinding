@@ -19,7 +19,7 @@ public struct CellData
 
 public class GridWorldModel
 {
-    public const int TICKS_PER_INCREASE = 2;
+    public const int TICKS_PER_INCREASE = 5;
 
     public int Width { get; init; }
     public int Height { get; init; }
@@ -70,15 +70,24 @@ public class GridWorldModel
         return sb.ToString();
     }
 
-    public int ValueOfCellAfterTakingPath(List<Position> path, Position position)
+    private Dictionary<(Path, Position), int> Cache = [];
+
+    public int ValueOfCellAfterTakingPath(Path path, Position position)
     {
+        if (Cache.ContainsKey((path, position)))
+        {
+            return Cache[(path, position)];
+        }
+
         if (!path.Contains(position))
         {
             return Grid[position.x, position.y].value;
         }
 
         int ticksSinceLastVisit = path.Count - path.LastIndexOf(position) - 1;
-        return Math.Min(ticksSinceLastVisit / TICKS_PER_INCREASE, Grid[position.x, position.y].maxValue);
+        int result = Math.Min(ticksSinceLastVisit / TICKS_PER_INCREASE, Grid[position.x, position.y].maxValue);
+        Cache[(path, position)] = result;
+        return result;
     }
 
     public ScoredPath ScorePath(Path path)

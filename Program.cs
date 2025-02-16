@@ -95,16 +95,16 @@ public static class Program
 
     private static void RunNonInteractive()
     {
-        GridWorldModel? worldModel = GridWorldModelImporter.TryImportGridWorldModel("Grids/1000.txt");
+        GridWorldModel? worldModel = GridWorldModelImporter.TryImportGridWorldModel("Grids/100.txt");
 
         if (worldModel is null)
         {
             return;
         }
 
-        ISurveyPathfinderAlgorithm algToDebug = new GeneticSurveyPathfinder();
+        ISurveyPathfinderAlgorithm algToDebug = new MCSurveyPathfinder();
 
-        ScoredPath result = algToDebug.CalculatePath(worldModel, (499, 499), 100, 1000);
+        ScoredPath result = algToDebug.CalculatePath(worldModel, (49, 49), 100, 10000);
 
         Display.DisplayState(worldModel, result.path[^1], result.path);
         Console.WriteLine($"{algToDebug} - Final score: {result.score}");

@@ -41,6 +41,11 @@ public class COBFSurveyPathfinder : ISurveyPathfinderAlgorithm
                             .ToList();
         }
 
+        if (timer.ElapsedMilliseconds > maxRunTimeMilliseconds)
+        {
+            Console.WriteLine("Time exceeded.");
+        }
+
         return paths.OrderByDescending(path => path.score).First();
     }
 }
