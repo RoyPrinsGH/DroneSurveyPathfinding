@@ -22,10 +22,10 @@ public class COBFSurveyPathfinder : ISurveyPathfinderAlgorithm
 
             foreach (ScoredPath scoredPath in paths)
             {
-                foreach ((Position position, CellData _) neighbor in worldModel.GetNeighbors(scoredPath.path[^1]))
+                foreach (Position position in worldModel.GetNeighboringPositions(scoredPath.path[^1]))
                 {
-                    Path appendedPath = [.. scoredPath.path, neighbor.position];
-                    ScoredPath newPath = (scoredPath.score + worldModel.ValueOfCellAfterTakingPath(scoredPath.path, neighbor.position), appendedPath);
+                    Path appendedPath = [.. scoredPath.path, position];
+                    ScoredPath newPath = (scoredPath.score + worldModel.ValueOfCellAfterTakingPath(scoredPath.path, position), appendedPath);
                     newPaths.Add(newPath);
 
                     if (timer.ElapsedMilliseconds > maxRunTimeMilliseconds) break;

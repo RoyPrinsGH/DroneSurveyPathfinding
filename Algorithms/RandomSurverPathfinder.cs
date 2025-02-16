@@ -25,8 +25,8 @@ public class RandomSurveyPathfinder : ISurveyPathfinderAlgorithm
                 break;
             }
             
-            var neighbors = worldModel.GetNeighbors(currentDronePosition).ToList();
-            currentDronePosition = neighbors[rng.Next(neighbors.Count)].position;
+            var neighbors = worldModel.GetNeighboringPositions(currentDronePosition).ToList();
+            currentDronePosition = neighbors[rng.Next(neighbors.Count)];
             totalScore += worldModel.ValueOfCellAfterTakingPath(path, currentDronePosition);
             path.Add(currentDronePosition);
         }

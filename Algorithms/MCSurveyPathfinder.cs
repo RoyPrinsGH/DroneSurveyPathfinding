@@ -8,7 +8,8 @@ using System.Diagnostics;
 // Monte carlo ~ish
 public class MCSurveyPathfinder : ISurveyPathfinderAlgorithm
 {
-    private const int exhaustiveDepth = 4;
+    private const int exhaustiveDepth = 3;
+    private const int searchForwardFactor = 2;
 
     public ScoredPath CalculatePath(GridWorldModel worldModel, Position droneStartingPosition, int steps, int maxRunTimeMilliseconds)
     {
@@ -31,10 +32,10 @@ public class MCSurveyPathfinder : ISurveyPathfinderAlgorithm
 
                 foreach (ScoredPath pathToExpand in pathsToSimulate)
                 {
-                    foreach ((Position position, CellData _) neighbor in worldModel.GetNeighbors(pathToExpand.path[^1]))
+                    foreach (Position position in worldModel.GetNeighboringPositions(pathToExpand.path[^1]))
                     {
-                        int cellValue = worldModel.ValueOfCellAfterTakingPath(pathToExpand.path, neighbor.position);
-                        expandedPaths.Add((pathToExpand.score + cellValue, [.. pathToExpand.path, neighbor.position]));
+                        int cellValue = worldModel.ValueOfCellAfterTakingPath(pathToExpand.path, position);
+                        expandedPaths.Add((pathToExpand.score + cellValue, [.. pathToExpand.path, position]));
 
                         if (timer.ElapsedMilliseconds > maxRunTimeMilliseconds)
                         {
@@ -52,22 +53,22 @@ public class MCSurveyPathfinder : ISurveyPathfinderAlgorithm
             {
                 ScoredPath simulatedPath = (pathToSimulate.score, [.. pathToSimulate.path]);
 
-                for (int i = stepsTaken + exhaustiveDepth; i < steps; i++)
+                for (int i = 0; i < (steps - stepsTaken + exhaustiveDepth) / searchForwardFactor; i++)
                 {
                     int max = -1;
                     List<Position> targetCandidates = [];
 
-                    foreach ((Position position, CellData _) neighborData in worldModel.GetNeighbors(simulatedPath.path[^1]))
+                    foreach (Position position in worldModel.GetNeighboringPositions(simulatedPath.path[^1]))
                     {
-                        int neighborValue = worldModel.ValueOfCellAfterTakingPath(simulatedPath.path, neighborData.position);
+                        int neighborValue = worldModel.ValueOfCellAfterTakingPath(simulatedPath.path, position);
                         if (neighborValue == max)
                         {
-                            targetCandidates.Add(neighborData.position);
+                            targetCandidates.Add(position);
                         }
                         if (neighborValue > max)
                         {
                             max = neighborValue;
-                            targetCandidates = [neighborData.position];
+                            targetCandidates = [position];
                         }
                     }
 

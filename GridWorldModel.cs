@@ -70,24 +70,18 @@ public class GridWorldModel
         return sb.ToString();
     }
 
-    private Dictionary<(Path, Position), int> Cache = [];
-
     public int ValueOfCellAfterTakingPath(Path path, Position position)
     {
-        if (Cache.ContainsKey((path, position)))
-        {
-            return Cache[(path, position)];
-        }
+        int lastIndex = path.LastIndexOf(position);
 
-        if (!path.Contains(position))
+        if (lastIndex == -1)
         {
             return Grid[position.x, position.y].value;
         }
 
-        int ticksSinceLastVisit = path.Count - path.LastIndexOf(position) - 1;
-        int result = Math.Min(ticksSinceLastVisit / TICKS_PER_INCREASE, Grid[position.x, position.y].maxValue);
-        Cache[(path, position)] = result;
-        return result;
+        int ticksSinceLastVisit = path.Count - lastIndex - 1;
+
+        return Math.Min(ticksSinceLastVisit / TICKS_PER_INCREASE, Grid[position.x, position.y].maxValue);
     }
 
     public ScoredPath ScorePath(Path path)
@@ -100,47 +94,47 @@ public class GridWorldModel
         return (score, path);
     }
 
-    public IEnumerable<(Position position, CellData data)> GetNeighbors(Position position)
+    public IEnumerable<Position> GetNeighboringPositions(Position position)
     {
         (int x, int y) = position;
 
         if (x > 0)
         {
-            yield return ((x - 1, y), Grid[x - 1, y]);
+            yield return (x - 1, y);
 
             if (y > 0)
             {
-                yield return ((x - 1, y - 1), Grid[x - 1, y - 1]);
+                yield return (x - 1, y - 1);
             }
 
             if (y < Height - 1)
             {
-                yield return ((x - 1, y + 1), Grid[x - 1, y + 1]);
+                yield return (x - 1, y + 1);
             }
         }
 
         if (y > 0)
         {
-            yield return ((x, y - 1), Grid[x, y - 1]);
+            yield return (x, y - 1);
         }
 
         if (y < Height - 1)
         {
-            yield return ((x, y + 1), Grid[x, y + 1]);
+            yield return (x, y + 1);
         }
 
         if (x < Width - 1)
         {
-            yield return ((x + 1, y), Grid[x + 1, y]);
+            yield return (x + 1, y);
 
             if (y > 0)
             {
-                yield return ((x + 1, y - 1), Grid[x + 1, y - 1]);
+                yield return (x + 1, y - 1);
             }
 
             if (y < Height - 1)
             {
-                yield return ((x + 1, y + 1), Grid[x + 1, y + 1]);
+                yield return (x + 1, y + 1);
             }
         }
     }

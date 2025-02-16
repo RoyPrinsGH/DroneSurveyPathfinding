@@ -5,7 +5,7 @@ using Path = List<(int x, int y)>;
 using ScoredPath = (int score, List<(int x, int y)> path);
 using System.Diagnostics;
 
-public class NaiveSurveyPathfinder : ISurveyPathfinderAlgorithm
+public class GreedySurveyPathfinder : ISurveyPathfinderAlgorithm
 {
     public ScoredPath CalculatePath(GridWorldModel worldModel, Position droneStartingPosition, int steps, int maxRunTimeMilliseconds)
     {
@@ -24,21 +24,21 @@ public class NaiveSurveyPathfinder : ISurveyPathfinderAlgorithm
             {
                 break;
             }
-            
+
             int max = -1;
             List<Position> targetCandidates = [];
 
-            foreach ((Position position, CellData _) neighborData in worldModel.GetNeighbors(currentDronePosition))
+            foreach (Position position in worldModel.GetNeighboringPositions(currentDronePosition))
             {
-                int neighborValue = worldModel.ValueOfCellAfterTakingPath(path, neighborData.position);
+                int neighborValue = worldModel.ValueOfCellAfterTakingPath(path, position);
                 if (neighborValue == max)
                 {
-                    targetCandidates.Add(neighborData.position);
+                    targetCandidates.Add(position);
                 }
                 if (neighborValue > max)
                 {
                     max = neighborValue;
-                    targetCandidates = [neighborData.position];
+                    targetCandidates = [position];
                 }
             }
 

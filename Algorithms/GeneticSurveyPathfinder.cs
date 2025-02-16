@@ -20,10 +20,10 @@ public class GeneticSurveyPathfinder : ISurveyPathfinderAlgorithm
 
         for (int i = 0; i < length; i++)
         {
-            var neighbors = worldModel.GetNeighbors(head).ToList();
-            (Position randomNeighbor, CellData data) = neighbors[rng.Next(neighbors.Count)];
+            var neighbors = worldModel.GetNeighboringPositions(head).ToList();
+            Position randomNeighbor = neighbors[rng.Next(neighbors.Count)];
+            score += worldModel.ValueOfCellAfterTakingPath(path, randomNeighbor);
             path.Add(randomNeighbor);
-            score += data.value;
             head = randomNeighbor;
         }
 
@@ -39,8 +39,8 @@ public class GeneticSurveyPathfinder : ISurveyPathfinderAlgorithm
 
         if (index == path.Count - 2)
         {
-            var neighbors = worldModel.GetNeighbors(newPath[^2]).ToList();
-            newPath[^1] = neighbors[rng.Next(neighbors.Count)].position;
+            var neighbors = worldModel.GetNeighboringPositions(newPath[^2]).ToList();
+            newPath[^1] = neighbors[rng.Next(neighbors.Count)];
         }
         else
         {
@@ -50,9 +50,9 @@ public class GeneticSurveyPathfinder : ISurveyPathfinderAlgorithm
 
             Func<Position, Position, int> DiagonalTaxiCab = (position1, position2) => Math.Max(Math.Abs(position1.x - position2.x), Math.Abs(position1.y - position2.y));
 
-            List<(Position position, CellData data)> possibleMoveLocations = worldModel.GetNeighbors(toMove)
-                                                                                       .Where(cell => DiagonalTaxiCab(cell.position, positionToStayConnectedTo) <= 1)
-                                                                                       .ToList();
+            List<Position> possibleMoveLocations = worldModel.GetNeighboringPositions(toMove)
+                                                             .Where(cell => DiagonalTaxiCab(cell, positionToStayConnectedTo) <= 1)
+                                                             .ToList();
 
             if (possibleMoveLocations.Count == 0)
             {
@@ -60,7 +60,7 @@ public class GeneticSurveyPathfinder : ISurveyPathfinderAlgorithm
             }
 
             int newIndex = rng.Next(possibleMoveLocations.Count);
-            newPath[index + 1] = possibleMoveLocations[newIndex].position;
+            newPath[index + 1] = possibleMoveLocations[newIndex];
         }
 
         return worldModel.ScorePath(newPath);
