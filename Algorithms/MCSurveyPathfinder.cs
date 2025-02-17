@@ -26,7 +26,9 @@ public class MCSurveyPathfinder : ISurveyPathfinderAlgorithm
         {
             List<ScoredPath> pathsToSimulate = [path];
 
-            for (int i = 0; i < exhaustiveDepth; i++)
+            int stepsToTake = Math.Min(exhaustiveDepth, steps - stepsTaken);
+
+            for (int i = 0; i < stepsToTake; i++)
             {
                 List<ScoredPath> expandedPaths = [];
 
@@ -94,7 +96,7 @@ public class MCSurveyPathfinder : ISurveyPathfinderAlgorithm
             }
 
             path = simulationScores.OrderByDescending(pair => pair.Value).First().Key;
-            stepsTaken += exhaustiveDepth;
+            stepsTaken += stepsToTake;
         }
 
         return path;
